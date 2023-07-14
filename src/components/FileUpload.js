@@ -124,7 +124,7 @@ const FileUpload = () => {
             const recognitionResults = await singleSideIDRecognizer.getResult();
             if (recognitionResults.state !== BlinkIDSDK.RecognizerResultState.Empty) {
 
-                let licenseStr = recognitionResults ? JSON.stringify(recognitionResults) : 'Not Found';
+                let licenseStr = recognitionResults ? JSON.stringify(recognitionResults, null, 4) : 'Not Found';
                 setParseData(licenseStr)
                 // console.log("BlinkID SingleSide recognizer results", recognitionResults);
 
@@ -248,7 +248,7 @@ const FileUpload = () => {
                 <h1>Processing...</h1>
                 <img id="target-image" />
             </div>
-            <span className='w-50'>{parseData}</span>
+            <p className='w-50'><pre>{parseData}</pre></p>
         </div>
 
     );
