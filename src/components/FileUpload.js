@@ -19,6 +19,10 @@ const FileUpload = () => {
         if (BlinkIDSDK.isBrowserSupported()) {
             const loadSettings = new BlinkIDSDK.WasmSDKLoadSettings("MWY1N2U3MTg1M2JhNDQzNGFiZDBjYWI4M2VlMTk2MDM6NWExZjQ4ZWMtZmU1MC00N2U3LTk0NDEtN2Q1ODRkM2UzZGY4");
             
+            loadSettings.allowHelloMessage = true;
+            loadSettings.engineLocation = "https://unpkg.com/@microblink/blinkid-in-browser-sdk@6.1.0/resources/";
+            loadSettings.workerLocation = await getWorkerLocation('https://unpkg.com/@microblink/blinkid-in-browser-sdk@6.1.0/resources/BlinkIDWasmSDK.worker.min.js');
+
             BlinkIDSDK.loadWasmModule(loadSettings)
                 .then(
                     async (wasmSDK) => {
