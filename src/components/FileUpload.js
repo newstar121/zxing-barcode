@@ -217,7 +217,7 @@ const FileUpload = () => {
                 <progress id="load-progress" value="0" max="100"></progress>
             </div>
 
-            <div id="screen-start" class="hidden">
+            <div id="screen-start" className="hidden">
                 <input
                     id="image-file"
                     type="file"
@@ -229,7 +229,7 @@ const FileUpload = () => {
                 <button onClick={decode}>Decode</button>
             </div>
 
-            <div id="screen-scanning" class="hidden">
+            <div id="screen-scanning" className="hidden">
                 <h1>Processing...</h1>
                 <img id="target-image" />
             </div>
