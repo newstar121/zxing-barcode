@@ -30,7 +30,10 @@ const FileUpload = () => {
 
     const decode = async () => {
         if (BlinkIDSDK.isBrowserSupported()) {
-            const loadSettings = new BlinkIDSDK.WasmSDKLoadSettings("MWY1N2U3MTg1M2JhNDQzNGFiZDBjYWI4M2VlMTk2MDM6NWExZjQ4ZWMtZmU1MC00N2U3LTk0NDEtN2Q1ODRkM2UzZGY4");
+            const apiKey = '1f57e71853ba4434abd0cab83ee19603'
+            const apiSecret = '5a1f48ec-fe50-47e7-9441-7d584d3e3df8'
+            // Base64.encode(apiKey+':'+apiSecret)
+            const loadSettings = new BlinkIDSDK.WasmSDKLoadSettings("sRwAAAYYcGRmNDE3LXR5a3Eub25yZW5kZXIuY29tLOZpvj5TcBKq2JAWVjqs5cfNl9ksiwEKpaMeTtO0M0qvYfuK0HzmNurNlnTBUL5E504ILw70D+L++l9cmR0NO0OY61b0Q7Dssk+PnyJslOuKDG70gPn6myOyOTzrl/S91zJxAMV/0ZasqDiVa51AweuSVPH25zpkGgd1LO0Wnxl/wh5voL94S6gHvfJKX6nx8tLq6BUVSa43b2whsc1xLosQqzI=");
 
             loadSettings.allowHelloMessage = true;
             loadSettings.loadProgressCallback = (progress) => { progressEl.value = progress };
@@ -233,7 +236,7 @@ const FileUpload = () => {
                     capture="environment"
 
                 />
-                <label for="image-file">Scan from file</label>
+                <label htmlFor="image-file">Scan from file</label>
                 {/* <button onClick={decode}>Decode</button> */}
             </div>
 
