@@ -21,6 +21,7 @@ const FileUpload = () => {
     };
 
     useEffect(() => {
+        setParseData(<></>)
         initialMessageEl = document.getElementById("msg");
         progressEl = document.getElementById("load-progress");
         scanImageElement = document.getElementById("target-image");
@@ -122,64 +123,67 @@ const FileUpload = () => {
         if (processResult !== BlinkIDSDK.RecognizerResultState.Empty) {
             const recognitionResults = await singleSideIDRecognizer.getResult();
             if (recognitionResults.state !== BlinkIDSDK.RecognizerResultState.Empty) {
-                console.log("BlinkID SingleSide recognizer results", recognitionResults);
 
-                let firstName = "";
-                let lastName = "";
-                let fullName = "";
+                let licenseStr = recognitionResults ? JSON.stringify(recognitionResults) : 'Not Found';
+                setParseData(licenseStr)
+                // console.log("BlinkID SingleSide recognizer results", recognitionResults);
 
-                if (recognitionResults?.firstName && recognitionResults?.lastName) {
-                    if (
-                        typeof recognitionResults.firstName === "string" &&
-                        typeof recognitionResults.lastName === "string"
-                    ) {
-                        firstName = recognitionResults.firstName;
-                        lastName = recognitionResults.lastName;
-                    } else {
-                        firstName =
-                            recognitionResults.firstName.latin ||
-                            recognitionResults.firstName.cyrillic ||
-                            recognitionResults.firstName.arabic;
-                        lastName =
-                            recognitionResults.lastName.latin ||
-                            recognitionResults.lastName.cyrillic ||
-                            recognitionResults.lastName.arabic;
-                    }
-                }
+                // let firstName = "";
+                // let lastName = "";
+                // let fullName = "";
 
-                if (recognitionResults?.fullName) {
-                    if (recognitionResults.fullName?.latin && recognitionResults.fullName?.arabic) {
-                        fullName = `${recognitionResults.fullName.latin} ${recognitionResults.fullName.arabic}`;
-                    } else if (recognitionResults.fullName?.latin && recognitionResults.fullName?.cirilic) {
-                        fullName = `${recognitionResults.fullName.latin} ${recognitionResults.fullName.cirilic}`
-                    } else {
-                        fullName =
-                            recognitionResults.fullName.latin ||
-                            recognitionResults.fullName.cyrillic ||
-                            recognitionResults.fullName.arabic;
-                    }
-                }
+                // if (recognitionResults?.firstName && recognitionResults?.lastName) {
+                //     if (
+                //         typeof recognitionResults.firstName === "string" &&
+                //         typeof recognitionResults.lastName === "string"
+                //     ) {
+                //         firstName = recognitionResults.firstName;
+                //         lastName = recognitionResults.lastName;
+                //     } else {
+                //         firstName =
+                //             recognitionResults.firstName.latin ||
+                //             recognitionResults.firstName.cyrillic ||
+                //             recognitionResults.firstName.arabic;
+                //         lastName =
+                //             recognitionResults.lastName.latin ||
+                //             recognitionResults.lastName.cyrillic ||
+                //             recognitionResults.lastName.arabic;
+                //     }
+                // }
 
-                const derivedFullName = `${firstName} ${lastName}`.trim() || fullName
+                // if (recognitionResults?.fullName) {
+                //     if (recognitionResults.fullName?.latin && recognitionResults.fullName?.arabic) {
+                //         fullName = `${recognitionResults.fullName.latin} ${recognitionResults.fullName.arabic}`;
+                //     } else if (recognitionResults.fullName?.latin && recognitionResults.fullName?.cirilic) {
+                //         fullName = `${recognitionResults.fullName.latin} ${recognitionResults.fullName.cirilic}`
+                //     } else {
+                //         fullName =
+                //             recognitionResults.fullName.latin ||
+                //             recognitionResults.fullName.cyrillic ||
+                //             recognitionResults.fullName.arabic;
+                //     }
+                // }
 
-                let dateOfBirth = {
-                    year: 0,
-                    month: 0,
-                    day: 0
-                };
+                // const derivedFullName = `${firstName} ${lastName}`.trim() || fullName
 
-                if (recognitionResults?.dateOfBirth) {
-                    dateOfBirth = {
-                        year: recognitionResults.dateOfBirth.year || recognitionResults.mrz.dateOfBirth.year,
-                        month: recognitionResults.dateOfBirth.month || recognitionResults.mrz.dateOfBirth.month,
-                        day: recognitionResults.dateOfBirth.day || recognitionResults.mrz.dateOfBirth.day
-                    }
-                }
+                // let dateOfBirth = {
+                //     year: 0,
+                //     month: 0,
+                //     day: 0
+                // };
 
-                alert
-                    (
-                        `Hello, ${derivedFullName}!\n You were born on ${dateOfBirth.year}-${dateOfBirth.month}-${dateOfBirth.day}.`
-                    );
+                // if (recognitionResults?.dateOfBirth) {
+                //     dateOfBirth = {
+                //         year: recognitionResults.dateOfBirth.year || recognitionResults.mrz.dateOfBirth.year,
+                //         month: recognitionResults.dateOfBirth.month || recognitionResults.mrz.dateOfBirth.month,
+                //         day: recognitionResults.dateOfBirth.day || recognitionResults.mrz.dateOfBirth.day
+                //     }
+                // }
+
+                // alert
+                //     (
+                //         `Hello, ${derivedFullName}!\n You were born on ${dateOfBirth.year}-${dateOfBirth.month}-${dateOfBirth.day}.`
+                //     );
             }
         }
         else {
@@ -244,6 +248,7 @@ const FileUpload = () => {
                 <h1>Processing...</h1>
                 <img id="target-image" />
             </div>
+            <span className='w-50'>{parseData}</span>
         </div>
 
     );
