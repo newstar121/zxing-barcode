@@ -17,7 +17,7 @@ const FileUpload = () => {
 
     const decode = async () => {
         if (BlinkIDSDK.isBrowserSupported()) {
-            const loadSettings = new BlinkIDSDK.WasmSDKLoadSettings("MWY1N2U3MTg1M2JhNDQzNGFiZDBjYWI4M2VlMTk2MDM6YzVjYjEzM2QtYWI1Yi00YjdlLTlhZDgtMmMyYmUzZjgyZDc5");
+            const loadSettings = new BlinkIDSDK.WasmSDKLoadSettings("MWY1N2U3MTg1M2JhNDQzNGFiZDBjYWI4M2VlMTk2MDM6NWExZjQ4ZWMtZmU1MC00N2U3LTk0NDEtN2Q1ODRkM2UzZGY4");
             
             BlinkIDSDK.loadWasmModule(loadSettings)
                 .then(
