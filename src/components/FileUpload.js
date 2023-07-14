@@ -75,6 +75,11 @@ const FileUpload = () => {
                         document
                             .getElementById("image-file")
                             ?.addEventListener("change", (ev) => {
+                                setFirstName('')
+                                setLastName('')
+                                setFullName('')
+                                setBirthDay('')
+                                setData('')
                                 ev.preventDefault();
                                 startScan(sdk, ev.target.files);
                             });
@@ -263,10 +268,10 @@ const FileUpload = () => {
                     type="file"
                     accept="image/*"
                     capture="environment"
-
+                    
                 />
-                <label htmlFor="image-file">Scan from file</label>
-                <button onClick={onSave}>Save to File</button>
+                {/* <label htmlFor="image-file">Scan from file</label> */}
+                <button className='ml-20' onClick={onSave}>Save to File</button>
             </div>
 
             <div id="screen-scanning" className="hidden">
