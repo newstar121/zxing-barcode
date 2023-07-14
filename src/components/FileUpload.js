@@ -9,16 +9,24 @@ const FileUpload = () => {
     const [parseData, setParseData] = useState(<></>)
     const [isLoading, setIsLoading] = useState(false)
 
-    const initialMessageEl = document.getElementById("msg");
-    const progressEl = document.getElementById("load-progress");
-    const scanImageElement = document.getElementById("target-image");
-    const inputImageFile = document.getElementById("image-file");
+    let initialMessageEl = document.getElementById("msg");
+    let progressEl = document.getElementById("load-progress");
+    let scanImageElement = document.getElementById("target-image");
+    let inputImageFile = document.getElementById("image-file");
 
     const saveFile = (e) => {
         setFile(URL.createObjectURL(e.target.files[0]));
         setFileName(e.target.files[0].name);
         setParseData(<></>)
     };
+
+    useEffect(() => {
+        initialMessageEl = document.getElementById("msg");
+        progressEl = document.getElementById("load-progress");
+        scanImageElement = document.getElementById("target-image");
+        inputImageFile = document.getElementById("image-file");
+        decode()
+    }, [])
 
     const decode = async () => {
         if (BlinkIDSDK.isBrowserSupported()) {
@@ -225,8 +233,8 @@ const FileUpload = () => {
                     capture="environment"
 
                 />
-                {/* <label for="image-file">Scan from file</label> */}
-                <button onClick={decode}>Decode</button>
+                <label for="image-file">Scan from file</label>
+                {/* <button onClick={decode}>Decode</button> */}
             </div>
 
             <div id="screen-scanning" className="hidden">
