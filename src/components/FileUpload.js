@@ -9,6 +9,13 @@ const FileUpload = () => {
     const [parseData, setParseData] = useState(<></>)
     const [isLoading, setIsLoading] = useState(false)
 
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [fullName, setFullName] = useState('')
+    const [birthday, setBirthDay] = useState('')
+
+    const [data, setData] = useState('')
+
     let initialMessageEl = document.getElementById("msg");
     let progressEl = document.getElementById("load-progress");
     let scanImageElement = document.getElementById("target-image");
@@ -20,8 +27,27 @@ const FileUpload = () => {
         setParseData(<></>)
     };
 
+    const onSave = () => {
+        if (data.length > 0) {
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'data.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
     useEffect(() => {
         setParseData(<></>)
+
+        setFirstName('')
+        setLastName('')
+        setFullName('')
+        setBirthDay('')
+
         initialMessageEl = document.getElementById("msg");
         progressEl = document.getElementById("load-progress");
         scanImageElement = document.getElementById("target-image");
@@ -124,66 +150,65 @@ const FileUpload = () => {
             const recognitionResults = await singleSideIDRecognizer.getResult();
             if (recognitionResults.state !== BlinkIDSDK.RecognizerResultState.Empty) {
 
-                let licenseStr = recognitionResults ? JSON.stringify(recognitionResults, null, 4) : 'Not Found';
-                setParseData(licenseStr)
-                // console.log("BlinkID SingleSide recognizer results", recognitionResults);
+                console.log("BlinkID SingleSide recognizer results", recognitionResults);
+                setData(JSON.stringify(recognitionResults, null, 4))
+                let firstName = "";
+                let lastName = "";
+                let fullName = "";
 
-                // let firstName = "";
-                // let lastName = "";
-                // let fullName = "";
+                if (recognitionResults?.firstName && recognitionResults?.lastName) {
+                    if (
+                        typeof recognitionResults.firstName === "string" &&
+                        typeof recognitionResults.lastName === "string"
+                    ) {
+                        firstName = recognitionResults.firstName;
+                        lastName = recognitionResults.lastName;
+                    } else {
+                        firstName =
+                            recognitionResults.firstName.latin ||
+                            recognitionResults.firstName.cyrillic ||
+                            recognitionResults.firstName.arabic;
+                        lastName =
+                            recognitionResults.lastName.latin ||
+                            recognitionResults.lastName.cyrillic ||
+                            recognitionResults.lastName.arabic;
+                    }
+                }
 
-                // if (recognitionResults?.firstName && recognitionResults?.lastName) {
-                //     if (
-                //         typeof recognitionResults.firstName === "string" &&
-                //         typeof recognitionResults.lastName === "string"
-                //     ) {
-                //         firstName = recognitionResults.firstName;
-                //         lastName = recognitionResults.lastName;
-                //     } else {
-                //         firstName =
-                //             recognitionResults.firstName.latin ||
-                //             recognitionResults.firstName.cyrillic ||
-                //             recognitionResults.firstName.arabic;
-                //         lastName =
-                //             recognitionResults.lastName.latin ||
-                //             recognitionResults.lastName.cyrillic ||
-                //             recognitionResults.lastName.arabic;
-                //     }
-                // }
+                if (recognitionResults?.fullName) {
+                    if (recognitionResults.fullName?.latin && recognitionResults.fullName?.arabic) {
+                        fullName = `${recognitionResults.fullName.latin} ${recognitionResults.fullName.arabic}`;
+                    } else if (recognitionResults.fullName?.latin && recognitionResults.fullName?.cirilic) {
+                        fullName = `${recognitionResults.fullName.latin} ${recognitionResults.fullName.cirilic}`
+                    } else {
+                        fullName =
+                            recognitionResults.fullName.latin ||
+                            recognitionResults.fullName.cyrillic ||
+                            recognitionResults.fullName.arabic;
+                    }
+                }
 
-                // if (recognitionResults?.fullName) {
-                //     if (recognitionResults.fullName?.latin && recognitionResults.fullName?.arabic) {
-                //         fullName = `${recognitionResults.fullName.latin} ${recognitionResults.fullName.arabic}`;
-                //     } else if (recognitionResults.fullName?.latin && recognitionResults.fullName?.cirilic) {
-                //         fullName = `${recognitionResults.fullName.latin} ${recognitionResults.fullName.cirilic}`
-                //     } else {
-                //         fullName =
-                //             recognitionResults.fullName.latin ||
-                //             recognitionResults.fullName.cyrillic ||
-                //             recognitionResults.fullName.arabic;
-                //     }
-                // }
+                const derivedFullName = `${firstName} ${lastName}`.trim() || fullName
 
-                // const derivedFullName = `${firstName} ${lastName}`.trim() || fullName
+                let dateOfBirth = {
+                    year: 0,
+                    month: 0,
+                    day: 0
+                };
 
-                // let dateOfBirth = {
-                //     year: 0,
-                //     month: 0,
-                //     day: 0
-                // };
+                if (recognitionResults?.dateOfBirth) {
+                    dateOfBirth = {
+                        year: recognitionResults.dateOfBirth.year || recognitionResults.mrz.dateOfBirth.year,
+                        month: recognitionResults.dateOfBirth.month || recognitionResults.mrz.dateOfBirth.month,
+                        day: recognitionResults.dateOfBirth.day || recognitionResults.mrz.dateOfBirth.day
+                    }
+                }
 
-                // if (recognitionResults?.dateOfBirth) {
-                //     dateOfBirth = {
-                //         year: recognitionResults.dateOfBirth.year || recognitionResults.mrz.dateOfBirth.year,
-                //         month: recognitionResults.dateOfBirth.month || recognitionResults.mrz.dateOfBirth.month,
-                //         day: recognitionResults.dateOfBirth.day || recognitionResults.mrz.dateOfBirth.day
-                //     }
-                // }
+                setFirstName(firstName)
+                setLastName(lastName)
+                setFullName(derivedFullName)
+                setBirthDay(dateOfBirth.year + '-' + dateOfBirth.month + '-' + dateOfBirth.day)
 
-                // alert
-                //     (
-                //         `Hello, ${derivedFullName}!\n You were born on ${dateOfBirth.year}-${dateOfBirth.month}-${dateOfBirth.day}.`
-                //     );
             }
         }
         else {
@@ -241,14 +266,34 @@ const FileUpload = () => {
 
                 />
                 <label htmlFor="image-file">Scan from file</label>
-                {/* <button onClick={decode}>Decode</button> */}
+                <button onClick={onSave}>Save to File</button>
             </div>
 
             <div id="screen-scanning" className="hidden">
                 <h1>Processing...</h1>
                 <img id="target-image" />
             </div>
-            <p className='w-50'><pre>{parseData}</pre></p>
+            {firstName.length > 0 || lastName.length > 0 || fullName.length > 0 || birthday.length > 0 ? (
+                <div className='d-flex flex-column items-center'>
+                    <div className='d-flex items-center'>
+                        <span className='fs-24 mr-20'>First Name:</span>
+                        <span className='fs-24 mr-20'>{firstName}</span>
+                    </div>
+                    <div className='d-flex items-center'>
+                        <span className='fs-24 mr-20'>Last Name:</span>
+                        <span className='fs-24 mr-20'>{lastName}</span>
+                    </div>
+                    <div className='d-flex items-center'>
+                        <span className='fs-24 mr-20'>Full Name:</span>
+                        <span className='fs-24 mr-20'>{fullName}</span>
+                    </div>
+                    <div className='d-flex items-center'>
+                        <span className='fs-24 mr-20'>BirthDay:</span>
+                        <span className='fs-24 mr-20'>{birthday}</span>
+                    </div>
+                </div>
+            ) : (<></>)}
+
         </div>
 
     );
